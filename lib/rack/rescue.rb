@@ -4,20 +4,17 @@ module Rack
 
     def initialize(app, options)
       @app = app
-      @exceptions_map = options.inject({}) do |exceptions_map, (exception_types, status_code)|
-        Array(exception_types).each {|exception_type| exceptions_map[exceptions_type.to_s] = status_code}
-        exceptions_map
-      end
+      @exceptions_map = Exceptions.new(options)
+      yield @exceptions_map if block_given?
     end
 
     def call(env)
-      response = @app.call(env)
+      @app.call(env)
     rescue Exception => e
-      e_class = e.class.to_s
-      if @exceptions_map.key?(e_class)
-        [@exceptions_map[e_class], {} ,[]]
+      if handler = @exceptions_map[e]
+        handler.handle(handler, e)
       else
-        raise e
+        raise e.class, e.message, e.backtrace
       end
     end
   end
