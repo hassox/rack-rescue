@@ -27,12 +27,14 @@ describe "RackRescue" do
     result.body.map.join.should == "OK"
   end
 
-  it "should re-raise the exception if it is not registered" do
+  it "should render the error with the defautl text error handler if it's an unkonwn exception" do
     bad_app = raise_endpoint(RRUnknownException, "Unknown Brew")
     stack = build_stack(bad_app)
-    lambda do
-      stack.call(@env)
-    end.should raise_error(RRUnknownException, "Unknown Brew")
+    r = stack.call(@env)
+    r[0].should == 500
+    body = r[2].body.map.join
+    body.should include("Error")
+    body.should include("Unknown Brew")
   end
 
   describe "A known exception" do

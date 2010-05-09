@@ -1,11 +1,14 @@
 <% content_block :error_header do %>
-  Error:
+  Error: <%= error.class %>
 <% end %>
 
 <% content_block :error_message do %>
-  Error Message:
+  Error Message: <%= error.message %>
 <% end %>
 
 <% content_block :error_backtrace do %>
   Error Backtrace:
+  <% if error && error.backtrace %>
+    <%= error.backtrace.join("\n") %>
+  <% end %>
 <% end %>

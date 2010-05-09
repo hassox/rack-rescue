@@ -2,6 +2,7 @@ require 'rack/rescue/exceptions'
 
 class Rack::Rescue::Exceptions
   DEFAULT_HANDLERS = [
+   ["RuntimeError",                            {:status => 500}],
    ["DataMapper::ObjectNotFoundError",         {:status => 404}],
    ["ActiveRecord::RecordNotFound",            {:status => 404}],
    ["Pancake::Errors::NotFound",               {:status => 404, :template => :not_found}],

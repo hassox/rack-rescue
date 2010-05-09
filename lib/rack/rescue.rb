@@ -18,10 +18,13 @@ module Rack
       if handler = @exceptions_map[e]
         opts = {}
         opts[:env] = env
-        Rack::Response.new(handler.render_error(e, opts),handler.status).finish
+        resp, status = handler.render_error(e, opts), handler.status
       else
-        raise e.class, e.message, e.backtrace
+        handler = @exceptions_map[RuntimeError]
+        opts = {:format => :text}
+        resp, status = handler.render_error(e, opts), handler.status
       end
+      Rack::Response.new(resp, status).finish
     end
   end
 end
