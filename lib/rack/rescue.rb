@@ -1,6 +1,9 @@
 module Rack
+  # Rack Middleware for rescuing exceptions and responding to the client
+  # With a page that is descriptive
   class Rescue
     autoload :Exceptions, 'rack/rescue/default_exceptions'
+    autoload :Handler,    'rack/rescue/handler'
 
     def initialize(app, options)
       @app = app

@@ -12,5 +12,5 @@ class Rack::Rescue::Exceptions
    ["Pancake::Errors::Forbidden",              {:status => 403}],
    ["Pancake::Errors::Server",                 {:status => 500}],
    ["Pancake::Errors::NotAcceptable",          {:status => 406}]
-  ].map{|(name, opts)| Handler.new(name, opts)}
+  ].map{|(name, opts)| Rack::Rescue::Handler.new(name, opts)}
 end

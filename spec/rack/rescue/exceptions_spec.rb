@@ -8,7 +8,7 @@ describe Rack::Rescue::Exceptions do
   end
 
   it "should allow me to access the exception" do
-    subject["MyNotFoundException"].should be_an_instance_of(Rack::Rescue::Exceptions::Handler)
+    subject["MyNotFoundException"].should be_an_instance_of(Rack::Rescue::Handler)
   end
 
   it "should provide me with a hash of all handlers" do
@@ -46,7 +46,7 @@ describe Rack::Rescue::Exceptions do
   end
 
   it "should provide a handler by default" do
-    subject[MyNotFoundException].handler.should == subject.class::Handler::DEFAULT_HANDLER
+    subject[MyNotFoundException].handler.should == Rack::Rescue::Handler::DEFAULT_HANDLER
   end
 
   it "should add to the default list" do

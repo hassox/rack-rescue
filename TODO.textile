@@ -1,0 +1,6 @@
+h1. TODO
+
+* Create a renderer for a handler
+* Add default templates for differnt formats (content negotiation)
+* Ensure that if a template is missing, render in plain text instead
+* Allow a template to set the template that it want's to be registered with
