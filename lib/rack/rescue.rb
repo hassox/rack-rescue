@@ -5,9 +5,10 @@ module Rack
     autoload :Exceptions, 'rack/rescue/default_exceptions'
     autoload :Handler,    'rack/rescue/handler'
 
-    def initialize(app, options)
+    def initialize(app, options = {})
       @app = app
-      @exceptions_map = Exceptions.new(options)
+      load_defaults = options.fetch(:load_default_exceptions, true)
+      @exceptions_map = Exceptions.new(load_defaults)
       yield @exceptions_map if block_given?
     end
 
@@ -15,7 +16,9 @@ module Rack
       @app.call(env)
     rescue Exception => e
       if handler = @exceptions_map[e]
-        handler.handle(handler, e)
+        opts = {}
+        opts[:env] = env
+        Rack::Response.new(handler.render_error(e, opts),handler.status).finish
       else
         raise e.class, e.message, e.backtrace
       end

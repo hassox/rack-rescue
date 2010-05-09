@@ -70,7 +70,7 @@ module Rack
         opts = Hash === exceptions.last ? exceptions.pop : {}
         exceptions.each do |e|
           name = exception_name(e)
-          exception_handlers[name] = Handler.new((opts[:status] || 500), e)
+          exception_handlers[name] = Handler.new(e, opts)
         end
       end
 

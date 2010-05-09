@@ -2,10 +2,9 @@ require 'rack/rescue/exceptions'
 
 class Rack::Rescue::Exceptions
   DEFAULT_HANDLERS = [
-   ["Pancake::Errors::NotFound",               {:status => 404}],
    ["DataMapper::ObjectNotFoundError",         {:status => 404}],
    ["ActiveRecord::RecordNotFound",            {:status => 404}],
-   ["Pancake::Errors::NotFound",               {:status => 404}],
+   ["Pancake::Errors::NotFound",               {:status => 404, :template => :not_found}],
    ["Pancake::Errors::UnknownRouter",          {:status => 500}],
    ["Pancake::Errors::UnknownConfiguration",   {:status => 500}],
    ["Pancake::Errors::Unauthorized",           {:status => 401}],

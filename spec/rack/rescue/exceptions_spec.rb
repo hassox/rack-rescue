@@ -45,10 +45,6 @@ describe Rack::Rescue::Exceptions do
     end
   end
 
-  it "should provide a handler by default" do
-    subject[MyNotFoundException].handler.should == Rack::Rescue::Handler::DEFAULT_HANDLER
-  end
-
   it "should add to the default list" do
     e = Rack::Rescue::Exceptions
     lambda do
