@@ -28,6 +28,7 @@ describe "RackRescue" do
   end
 
   it "should render the error with the defautl text error handler if it's an unkonwn exception" do
+    @env['HTTP_ACCEPT'] =  "text/plain"
     bad_app = raise_endpoint(RRUnknownException, "Unknown Brew")
     stack = build_stack(bad_app)
     r = stack.call(@env)
@@ -41,6 +42,7 @@ describe "RackRescue" do
     it "should render the template for the error" do
       bad_app = raise_endpoint(Pancake::Errors::NotFound, "Action Not Found")
       stack = build_stack(bad_app)
+      @env['HTTP_ACCEPT'] = 'text/plain'
       r = stack.call(@env)
 
       body = r[2].body.map.join
@@ -50,6 +52,7 @@ describe "RackRescue" do
     it "should set the correct status code" do
       bad_app = raise_endpoint(Pancake::Errors::NotFound, "Action Not Found")
       stack = build_stack(bad_app)
+      @env['HTTP_ACCEPT'] = "text/plain"
       r = stack.call(@env)
 
       status = r[0]
@@ -58,4 +61,37 @@ describe "RackRescue" do
       body.should include("Action Not Found")
     end
   end
+
+  it "should provide a list of default formats" do
+    Rack::Rescue.default_formats.should == Pancake::MimeTypes.groups.keys.map(&:to_sym)
+    rr = Rack::Rescue.new SUCCESS_APP
+    rr.formats.should == Pancake::MimeTypes.groups.keys.map(&:to_sym)
+  end
+
+  it "should let me overwrite the formats avaiable" do
+    rr = Rack::Rescue.new(SUCCESS_APP, :formats => [:text, :html])
+    rr.formats.should == [:text, :html]
+  end
+
+  it "should inspect the rack env and negotiate the content" do
+    env = Rack::MockRequest.env_for("/")
+    env['HTTP_ACCEPT'] = "text/xml"
+
+    rr = Rack::Rescue.new(raise_endpoint(RuntimeError, "Boo"))
+    result = rr.call(env)
+    result[0].should == 500
+    result[2].body.to_s.should include("XML Error Template")
+  end
+
+
+  it "should inspect the extension of the " do
+    env = Rack::MockRequest.env_for("/")
+    env['HTTP_ACCEPT'] = "text/xml"
+
+    rr = Rack::Rescue.new(raise_endpoint(RuntimeError, "Boo"))
+    result = rr.call(env)
+    result[0].should == 500
+    result[2].body.to_s.should include("XML Error Template")
+  end
+
 end

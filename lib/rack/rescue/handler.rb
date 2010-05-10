@@ -93,7 +93,7 @@ module Rack
         else
           tn = 'error'
           unless self.class.template?(tn, opts)
-            opts[:format] = text
+            opts[:format] = :text
           end
         end
 
