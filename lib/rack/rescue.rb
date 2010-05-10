@@ -7,6 +7,8 @@ module Rack
     autoload :Handler,    'rack/rescue/handler'
     autoload :Responder,  'rack/rescue/responder'
 
+    inheritable_inner_classes "Exceptions", "Handler", "Responder"
+
     # Make sure there are a minimum set of formats available
     [:html, :xml, :text, :js, :json].each do |f|
       ::Pancake::MimeTypes.group(f)
@@ -55,6 +57,14 @@ module Rack
 
       handler = @exceptions_map[e].nil? ? @exceptions_map[RuntimeError] : @exceptions_map[e]
       resp, status = handler.render_error(e, opts), handler.status
+
+      layout = env['layout']
+      if layout
+        layout.format = opts[:format]
+        layout.template_name = :error if layout.template_name?(:error)
+        resp = layout
+      end
+
       Rack::Response.new(resp, status, responder.headers).finish
     end
   end

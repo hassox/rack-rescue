@@ -83,7 +83,6 @@ describe "RackRescue" do
     result[2].body.to_s.should include("XML Error Template")
   end
 
-
   it "should inspect the extension of the " do
     env = Rack::MockRequest.env_for("/")
     env['HTTP_ACCEPT'] = "text/xml"
@@ -92,6 +91,29 @@ describe "RackRescue" do
     result = rr.call(env)
     result[0].should == 500
     result[2].body.to_s.should include("XML Error Template")
+  end
+
+  it "should wrap the error in a layout if there's one present" do
+    endpoint = raise_endpoint(RuntimeError, "Bad Error")
+
+    layout_dir = File.join(File.expand_path(File.dirname(__FILE__)), 'rack', 'rescue', 'fixtures', 'layouts')
+
+    File.exists?(File.join(layout_dir, "error.html.erb")).should be_true
+
+    app = Rack::Builder.new do
+      use Wrapt do |wrapt|
+        wrapt.layout_dirs << layout_dir
+      end
+
+      use Rack::Rescue
+      run endpoint
+    end
+
+    env = Rack::MockRequest.env_for("/foo.html")
+    r = app.call(env)
+    r[0].should == 500
+    body = r[2].body.to_s
+    body.should include("<h1>Error Layout</h1>")
   end
 
 end

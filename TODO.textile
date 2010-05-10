@@ -1,5 +1,6 @@
 h1. TODO
 
 * Add default templates for differnt formats (content negotiation)
-* Provide content negotiation so that the format of the template can be established
+* Make the default handler inheritance safe (DEFAULT_HANLDERS)
 * Provide a format check to use in preference to the normal content_negotiation
+* Make it layout aware
