@@ -1,5 +1,6 @@
 h1. TODO
 
+* Add simple helpers for the view
 * Add default templates for differnt formats (content negotiation)
 * Make the default handler inheritance safe (DEFAULT_HANLDERS)
 * Provide a format check to use in preference to the normal content_negotiation

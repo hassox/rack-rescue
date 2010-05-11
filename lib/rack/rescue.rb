@@ -14,7 +14,6 @@ module Rack
       ::Pancake::MimeTypes.group(f)
     end
 
-
     def self.default_formats
       return @default_formats if @default_formats
       if ENV['RACK_ENV'] == 'production'
@@ -56,6 +55,7 @@ module Rack
       opts[:format] = responder.content_type
 
       handler = @exceptions_map[e].nil? ? @exceptions_map[RuntimeError] : @exceptions_map[e]
+
       resp, status = handler.render_error(e, opts), handler.status
 
       layout = env['layout']

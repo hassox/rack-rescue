@@ -1,6 +1,19 @@
 <div class='exception'>
   <% content_block :error_header do %>
-    <h1>Error</h1>
+    <h1>Error: <%= error.class %></h1>
   <% end %>
 
+  <% content_block :error_message do %>
+    <div class='error'>
+      <%= error.message %>
+    </div>
+  <% end %>
+
+  <% content_block :error_backtrace do %>
+    <ul class='error backtrace'>
+      <% error.backtrace.each do |line| %>
+        <li><%= line %></li>
+      <% end %>
+    </ul>
+  <% end %>
 </div>

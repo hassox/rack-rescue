@@ -43,7 +43,11 @@ describe Rack::Rescue::Handler do
 
     before do
       @handler = Rack::Rescue::Handler.new(RackRescueCustom1, :template => "custom_exception", :status => 412)
-      @exception = RackRescueCustom1.new("Custom Error Message")
+      begin
+        raise RackRescueCustom1, "Custom Error Message"
+      rescue => e
+        @exception = e
+      end
     end
 
     it "should render the template that the exception is associated with" do
