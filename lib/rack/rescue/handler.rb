@@ -59,6 +59,16 @@ module Rack
       #
       # The template name should be the filename of the template up and until the extension for the template engine.
       #
+      # The template name can be one of two forms.
+      # The first preference includes the format, and the rack environment.
+      #
+      # @example
+      #   # ENV['RACK_ENV'] == "test" && format == :html
+      #   my_template.test.html.haml
+      #
+      #   # The second preference is to use simply the format
+      #   my_template.html.haml
+      #
       # @example
       #   # To find a template: my_template.html.erb
       #
@@ -66,8 +76,17 @@ module Rack
       # @see Pancake::Mixins::Render::ClassMethods._template_name_for
       # @api overwritable
       def self._template_name_for(name,opts)
+        @template_names ||= {}
         format = opts.fetch(:format, default_format)
-        "#{name}.#{format}"
+        env = ENV['RACK_ENV']
+        key = [name, env, format]
+        @template_names[key] ||= begin
+          names = []
+          names << "#{name}.#{env}.#{format}" if env && format
+          names << "#{name}.#{format}" if format
+          names << "#{name}"
+          names
+        end
       end
 
       def initialize(exception, opts = {}, &blk)
@@ -87,6 +106,7 @@ module Rack
         template_name = opts.fetch(:template_name, default_template)
         opts[:format] ||= default_format || self.class.default_format
         opts[:error]  ||= error
+        opts[:status] = self.status
 
         if self.class.template?(template_name, opts)
           tn = template_name

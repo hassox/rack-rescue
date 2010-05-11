@@ -82,7 +82,31 @@ describe Rack::Rescue::Handler do
     it "should allow me to overwrite the default format for the handler" do
       handler = Rack::Rescue::Handler.new(RackRescueCustom1, :template => "custom_exception", :status => 412, :format => :html)
       result = handler.render_error(@exception)
-      result.should include("<h1>Error")
+      result.should include("<h1>412 Error")
+    end
+
+    it "should render the exception using the foo_env error template" do
+      begin
+        orig_env = ENV['RACK_ENV']
+        ENV['RACK_ENV'] = "foo_env"
+        handler = Rack::Rescue::Handler.new(RackRescueCustom1, :template => "alternate_exceptions", :format => :html)
+        result = handler.render_error(@exception, :format => :html)
+        result.should include("In alternate_exceptions.foo_env.html.erb")
+      ensure
+        ENV['RACK_ENV'] = orig_env
+      end
+    end
+
+    it "should render the exception using the standard error template" do
+      begin
+        orig_env = ENV['RACK_ENV']
+        ENV['RACK_ENV'] = nil
+        handler = Rack::Rescue::Handler.new(RackRescueCustom1, :template => "alternate_exceptions", :format => :html)
+        result = handler.render_error(@exception)
+        result.should include("In alternate_exceptions.html.erb")
+      ensure
+        ENV['RACK_ENV'] = orig_env
+      end
     end
   end
 end
