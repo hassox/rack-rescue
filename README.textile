@@ -1,0 +1,70 @@
+h1. Rack::Rescue
+
+Rack Rescue is a middleware for handling exceptions in your rack application.
+
+Rack::Rescue will set the correct status, render a template, and optionally run any number of callbacks when an exception is experienced.
+
+Just insert the middleware in your stack, and any unhandled exception will trigger the handling.  Unknown exceptions trigger a basic error page, with a 500 status.
+
+Rather than launch into a long-winded chat about what it can do, I'll suffice with a list.
+
+* Per exception status codes
+* Per exception templates (with a fallback template)
+* Content type negotiation (:html, :xml, :js etc)
+* cascading tempate locations
+* template naming of the usual <name>.<format>.<(erb|haml|other tilt template)>
+* template naming including the RACK_ENV
+** <name>.<RACK_ENV>.<format>.<(tilt template engine ext)>
+** If the more specific template is not found, it will fall back to just name, format and ext
+* template inheritance
+
+h2. Adding Exceptions
+
+<pre><code>
+  # Add to the default list
+  Rack::Rescue::Exceptions.add_defaults("MyException", "AnotherException", :status => 404)
+  Rack::Rescue::Exceptions.add_defaults("DifferetOne", :status => 455, :template => "different")
+
+  # Add to a specific Rack::Rescue
+  use Rack::Rescue do |rr|
+    rr.add("SomeException", :status => 478, :template => "something")
+  end
+</code></pre>
+
+h2. Add a template location
+
+By default templates should be located in
+
+&lt;handler root&gt;/rack_rescue_templates/**/*
+
+To add a new handler root
+
+<pre><code>
+  Rack::Rescue::Handler.roots << File.join(Dir.pwd, "views")
+</pre></code>
+
+This will then look in "./views/rack_rescue_template" directory for you templates.  If it doesn't find them in there it will fall back to the templates located in any other roots, or finall to the default templates it ships with.
+
+h2. Template Naming
+
+Templates are named with the following form, in the following preference:
+
+1. name.env.format.ext # error.development.html.erb
+2. name.format.ext     # error.html.erb
+
+If the first is not matched, the second will be also checked
+
+
+h1. Note on Patches/Pull Requests
+
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+h2. Copyright
+
+Copyright (c) 2010 Daniel Neighman. See LICENSE for details.

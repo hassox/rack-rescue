@@ -3,6 +3,10 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "RackRescue" do
   class RRUnknownException < RuntimeError; end
 
+  after do
+    Rack::Rescue.error_handlers.clear
+  end
+
   def safe_endpoint(msg = "OK")
     lambda{|e| Rack::Response.new(msg)}
   end
@@ -114,6 +118,34 @@ describe "RackRescue" do
     r[0].should == 500
     body = r[2].body.to_s
     body.should include("<h1>Error Layout</h1>")
+  end
+
+  it "should allow me to add error handlers and they should execute on each exception" do
+    layout_dir = File.join(File.expand_path(File.dirname(__FILE__)), 'rack', 'rescue', 'fixtures', 'layouts')
+    Rack::Rescue.add_handler do |exception, env, options|
+      options[:format].should == :html
+      options[:layout].should == 'error'
+    end
+    Rack::Rescue.add_handler do |exception, env, options|
+      options[:format] = :xml
+      options[:layout] = 'custom_error_layout'
+    end
+    Rack::Rescue.add_handler do |exception, env, options|
+      options[:format].should == :xml
+      options[:layout].should == 'custom_error_layout'
+    end
+
+    app = Rack::Builder.new do
+      use Wrapt do |wrapt|
+        wrapt.layout_dirs << layout_dir
+      end
+      use Rack::Rescue
+      the_app = lambda{|e| raise "Halp"}
+      run the_app
+    end
+
+    result = app.call(Rack::MockRequest.env_for("/"))
+    result[2].body.join.should include("Custom Error Layout")
   end
 
 end
