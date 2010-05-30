@@ -3,7 +3,7 @@ require 'bundler'
 
 Gem::Specification.new do |s|
   s.name = 'rack-rescue'
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.homepage = %q{http://github.com/hassox/rack-rescue}
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{rack/rescue}
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.files = Dir[File.join(Dir.pwd, "**/*")]
+  s.files = Dir['**/*']
 
   s.add_bundler_dependencies
 
