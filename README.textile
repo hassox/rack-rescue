@@ -12,12 +12,22 @@ Rather than launch into a long-winded chat about what it can do, I'll suffice wi
 * Per exception templates (with a fallback template)
 * Content type negotiation (:html, :xml, :js etc)
 * cascading tempate locations
-* template naming of the usual <name>.<format>.<(erb|haml|other tilt template)>
+* template naming of the usual &lt;name&gt;.&lt;format&gt;.&lt;(erb|haml|other tilt template)&gt;
 * template naming including the RACK_ENV
-** <name>.<RACK_ENV>.<format>.<(tilt template engine ext)>
+** &lt;name&gt;.&lt;RACK_ENV&gt;.&lt;format&gt;.&lt;(tilt template engine ext)&gt;
 ** If the more specific template is not found, it will fall back to just name, format and ext
 * template inheritance
 * Arbitrary exception hooks
+* Integration with "Wrapt layouts":http://github.com/hassox/wrapt
+
+h2. Basic Usage
+
+In config.ru
+
+<pre><code>
+  use Rack::Rescue
+  run MyApp
+</code></pre>
 
 h2. Adding Exceptions
 
