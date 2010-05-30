@@ -17,6 +17,7 @@ Rather than launch into a long-winded chat about what it can do, I'll suffice wi
 ** <name>.<RACK_ENV>.<format>.<(tilt template engine ext)>
 ** If the more specific template is not found, it will fall back to just name, format and ext
 * template inheritance
+* Arbitrary exception hooks
 
 h2. Adding Exceptions
 
@@ -54,6 +55,15 @@ Templates are named with the following form, in the following preference:
 
 If the first is not matched, the second will be also checked
 
+h2. Arbitrary Exception hooks
+
+When an exception is detected, any exception hooks that have been declared are executed before the template is rendered and the response returned to the client.
+
+<pre><code>
+  Rack::Rescue.add_handler do |exception, env, options|
+    # email me the exception!
+  end
+</code></pre>
 
 h1. Note on Patches/Pull Requests
 
