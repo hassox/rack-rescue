@@ -3,7 +3,7 @@ require 'bundler'
 
 Gem::Specification.new do |s|
   s.name = 'rack-rescue'
-  s.version = '0.1.1'
+  s.version = '0.1.2'
   s.homepage = %q{http://github.com/hassox/rack-rescue}
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{rack/rescue}
