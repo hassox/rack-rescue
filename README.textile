@@ -11,12 +11,12 @@ Rather than launch into a long-winded chat about what it can do, I'll suffice wi
 * Per exception status codes
 * Per exception templates (with a fallback template)
 * Content type negotiation (:html, :xml, :js etc)
-* cascading tempate locations
-* template naming of the usual &lt;name&gt;.&lt;format&gt;.&lt;(erb|haml|other tilt template)&gt;
-* template naming including the RACK_ENV
+* Cascading tempate locations
+* Template naming of the usual &lt;name&gt;.&lt;format&gt;.&lt;(erb|haml|other tilt template)&gt;
+* Template naming including the RACK_ENV
 ** &lt;name&gt;.&lt;RACK_ENV&gt;.&lt;format&gt;.&lt;(tilt template engine ext)&gt;
 ** If the more specific template is not found, it will fall back to just name, format and ext
-* template inheritance
+* Template inheritance
 * Arbitrary exception hooks
 * Integration with "Wrapt layouts":http://github.com/hassox/wrapt
 
@@ -54,16 +54,16 @@ To add a new handler root
   Rack::Rescue::Handler.roots << File.join(Dir.pwd, "views")
 </pre></code>
 
-This will then look in "./views/rack_rescue_template" directory for you templates.  If it doesn't find them in there it will fall back to the templates located in any other roots, or finall to the default templates it ships with.
+This will then look in "./views/rack_rescue_template" directory for your templates.  If it doesn't find them in there it will fall back to the templates located in any other roots, or finall to the default templates it ships with.
 
 h2. Template Naming
 
-Templates are named with the following form, in the following preference:
+Templates are named with the following form, in the following order:
 
 1. name.env.format.ext # error.development.html.erb
 2. name.format.ext     # error.html.erb
 
-If the first is not matched, the second will be also checked
+If the first is not matched, the second will be also checked.
 
 h2. Arbitrary Exception hooks
 
